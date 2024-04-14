@@ -13,7 +13,7 @@ const root = createRoot(rootElement as HTMLElement);
 root.render(
   <>
     <Provider store={store}>
-      <BrowserRouter basename="/issues">
+      <BrowserRouter basename="/issue-board">
         <ChakraProvider>
           <App />
         </ChakraProvider>

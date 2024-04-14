@@ -16,7 +16,6 @@ jobs:
           npm install
           npm run build
         env:
-          # REACT_APP_ISSUES_TOKEN: ${{secrets.REACT_APP_ISSUES_TOKEN}}
           GH_TOKEN: ${{ secrets.REACT_APP_ISSUES_TOKEN }}
 
       - name: Deploy 🚀
