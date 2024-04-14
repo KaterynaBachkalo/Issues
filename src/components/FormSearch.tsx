@@ -37,13 +37,13 @@ const FormSearch: FC = () => {
     const { url } = values;
     try {
       // Виділяємо власника та ім'я репозиторію з URL
-      const regex = /https:\/\/github.com\/([^\/]+)\/([^\/]+)/;
+      const regex = /https:\/\/github.com\/([^/]+)\/([^/]+)/;
       const match = regex.exec(url);
       if (!match) {
         return setError("Invalid GitHub repository URL");
       }
 
-      const [_, owner, repo] = match;
+      const [, owner, repo] = match;
 
       // Виконати запит до GitHub API для отримання даних репозиторію
       const response = await axios.get(
