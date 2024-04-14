@@ -4,8 +4,6 @@ import { ThreeDots } from "react-loader-spinner";
 
 const Loader = () => {
   return (
-    // <div className={css.backdrop}>
-    //   <div className={css.spinnerWrapper}>
     <ThreeDots
       visible={true}
       height={100}
@@ -20,8 +18,6 @@ const Loader = () => {
       }}
       wrapperClass="modal-wrapper"
     />
-    //   </div>
-    // </div>
   );
 };
 
