@@ -7,7 +7,7 @@
 ## Technologies used
 
 **Front-end**<br />
-`TypeScript` `React` `React Router` `ReduxToolkit` `ReduxPersist` `Firebase` `nanoid` `HTML/CSS` `react-loader-spinner` `react-toastify` `Formik & Yup` `Responsive design`
+`TypeScript` `React` `React Router` `ReduxToolkit` `ReduxPersist` `Firebase` `nanoid` `HTML/CSS` `react-loader-spinner` `react-toastify` `Chakra UI`
 
 **Back-end**<br />
 `Firebase (Realtime Database and Authentication)`
