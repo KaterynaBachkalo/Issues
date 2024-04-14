@@ -1,0 +1,56 @@
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+
+  background-color: var(--backdrop-color-black);
+  z-index: 200;
+}
+
+.container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  max-height: calc(100vh - 20px);
+  max-width: 566px;
+}
+
+.modal {
+  position: relative;
+  padding: 64px;
+  padding: calc(30px + (64 - 30) * ((100vw - 320px) / (1440 - 320)));
+  border-radius: 30px;
+
+  background: var(--secondary-color-white);
+  z-index: 300;
+  width: calc(280px + (566 - 280) * ((100vw - 320px) / (1440 - 320)));
+}
+
+.modalBig {
+  width: calc(280px + (600 - 280) * ((100vw - 320px) / (1440 - 320)));
+}
+
+.btnClose {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 0;
+
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.title {
+  font-size: calc(28px + (40 - 28) * ((100vw - 320px) / (1440 - 320)));
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+
+  padding-bottom: 20px;
+}

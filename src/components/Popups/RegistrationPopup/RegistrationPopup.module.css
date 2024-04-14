@@ -1,0 +1,5 @@
+.subtitle {
+  line-height: 1.2;
+  color: var(--secondary-color-black);
+  padding-bottom: 40px;
+}
