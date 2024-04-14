@@ -28,7 +28,8 @@ interface IRepoData {
 
 const FormSearch: FC = () => {
   const [repoData, setRepoData] = useState<IRepoData | null>(null);
-  const [issuesArr, setIssuesArr] = useState<[]>([]);
+  const [issuesOpenArr, setIssuesOpenArr] = useState<[]>([]);
+  const [issuesClosedArr, setIssuesClosedArr] = useState<[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const initialValues: IForms = { url: "" };
@@ -57,8 +58,17 @@ const FormSearch: FC = () => {
       );
       // Виконати запит до GitHub API для отримання даних issues
 
-      const responseIssues = await axios.get(
-        `https://api.github.com/repos/${owner}/${repo}/issues`,
+      const responseIssuesOpen = await axios.get(
+        `https://api.github.com/repos/${owner}/${repo}/issues?state=open`,
+        {
+          headers: {
+            Authorization: `${process.env.REACT_APP_ISSUES_TOKEN}`,
+          },
+        }
+      );
+
+      const responseIssuesClosed = await axios.get(
+        `https://api.github.com/repos/${owner}/${repo}/issues?state=closed`,
         {
           headers: {
             Authorization: `${process.env.REACT_APP_ISSUES_TOKEN}`,
@@ -66,7 +76,8 @@ const FormSearch: FC = () => {
         }
       );
       setRepoData(response.data);
-      setIssuesArr(responseIssues.data);
+      setIssuesOpenArr(responseIssuesOpen.data);
+      setIssuesClosedArr(responseIssuesClosed.data);
       setError(null);
     } catch (error) {
       console.error("Failed to fetch repository data:", error);
@@ -164,7 +175,7 @@ const FormSearch: FC = () => {
         </Flex>
       )}
       {error && <Text color="red.500">{error}</Text>}
-      {repoData && <IssuesList data={issuesArr} />}
+      {repoData && <IssuesList open={issuesOpenArr} close={issuesClosedArr} />}
     </>
   );
 };
