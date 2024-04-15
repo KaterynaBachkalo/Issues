@@ -1,18 +1,24 @@
-export interface INanny {
-  about: string;
-  avatar_url: string;
-  birthday: string;
-  education: string;
-  experience: string;
-  kids_age: string;
-  location: string;
+export interface IIssues {
+  id: number;
+  pull_request: {};
+  state: string;
+  title: string;
+  number: number;
+  created_at: string;
+  user: {
+    login: string;
+    html_url: string;
+  };
+  comments: number;
+  assignee: {} | null;
+}
+
+export interface IRepoData {
   name: string;
-  price_per_hour: number;
-  rating: number;
-  characters: string[];
-  reviews: {
-    comment: string;
-    rating: number;
-    reviewer: string;
-  }[];
+  html_url: string;
+  owner: {
+    login: string;
+    html_url: string;
+  };
+  stargazers_count: number;
 }

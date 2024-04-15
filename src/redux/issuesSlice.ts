@@ -1,13 +1,14 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-import { INanny } from "../types";
+import { IIssues, IRepoData } from "../types";
 
 export interface IState {
-  items: INanny[];
+  repoData: IRepoData | null;
+  openIssues: IIssues[];
+  assigneeIssues: IIssues[];
+  closedIssues: IIssues[];
   isLoading: boolean;
   error: any | null;
-  favorites: string[];
-  currentPage: number;
 }
 
 export const handlePending = (state: IState): void => {
@@ -37,40 +38,39 @@ export const handleRejected = (
 };
 
 export const INITIAL_STATE: IState = {
-  items: [],
+  repoData: null,
+  openIssues: [],
+  assigneeIssues: [],
+  closedIssues: [],
   isLoading: false,
   error: null,
-  favorites: [],
-  currentPage: 1,
 };
 
-const nanniesSlice = createSlice({
-  name: "nannies",
+const issuesSlice = createSlice({
+  name: "issues",
   initialState: INITIAL_STATE,
 
   reducers: {
-    addToFavorites(state, action: PayloadAction<string>) {
-      state.favorites.push(action.payload);
-    },
-    deleteFavorites(state, action: PayloadAction<string>) {
-      state.favorites = state.favorites.filter(
-        (favorite) => favorite !== action.payload
-      );
-    },
-    clearFavorites(state) {
-      state.favorites = [];
-    },
     clearState(state) {
-      state.items = [];
+      state = INITIAL_STATE;
     },
-    setCurrentPage(state, action: PayloadAction<number>) {
-      state.currentPage = action.payload;
+    setRepoData(state, action: PayloadAction<IRepoData>) {
+      state.repoData = action.payload;
+      state.isLoading = false;
+      state.error = null;
     },
-    setNextPage(state) {
-      state.currentPage = state.currentPage + 1;
+    setOpenIssues(state, action: PayloadAction<IIssues[]>) {
+      state.openIssues = action.payload;
+      state.isLoading = false;
+      state.error = null;
     },
-    setNannies(state, action: PayloadAction<INanny[]>) {
-      state.items = action.payload;
+    setAssigneeIssues(state, action: PayloadAction<IIssues[]>) {
+      state.assigneeIssues = action.payload;
+      state.isLoading = false;
+      state.error = null;
+    },
+    setClosedIssues(state, action: PayloadAction<IIssues[]>) {
+      state.closedIssues = action.payload;
       state.isLoading = false;
       state.error = null;
     },
@@ -84,14 +84,12 @@ const nanniesSlice = createSlice({
 });
 
 export const {
-  addToFavorites,
-  deleteFavorites,
   clearState,
-  setCurrentPage,
-  setNannies,
+  setRepoData,
+  setOpenIssues,
+  setAssigneeIssues,
+  setClosedIssues,
   setLoading,
   setError,
-  setNextPage,
-  clearFavorites,
-} = nanniesSlice.actions;
-export const nanniesReducer = nanniesSlice.reducer;
+} = issuesSlice.actions;
+export const issuesReducer = issuesSlice.reducer;

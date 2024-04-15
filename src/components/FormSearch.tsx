@@ -12,26 +12,23 @@ import {
 import axios from "axios";
 import { StarIcon } from "@chakra-ui/icons";
 import IssuesList from "./IssuesList";
+import { useDispatch } from "react-redux";
+import { setError, setRepoData } from "../redux/issuesSlice";
+import { useSelector } from "react-redux";
+import { selectError, selectRepoData } from "../redux/selectors";
 
 interface IForms {
   url: string;
 }
 
-interface IRepoData {
-  name: string;
-  html_url: string;
-  owner: {
-    login: string;
-    html_url: string;
-  };
-  stargazers_count: number;
-}
-
 const FormSearch: FC = () => {
-  const [repoData, setRepoData] = useState<IRepoData | null>(null);
-  const [issuesOpenArr, setIssuesOpenArr] = useState<[]>([]);
-  const [issuesClosedArr, setIssuesClosedArr] = useState<[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const [issuesOpen, setIssuesOpen] = useState<[]>([]);
+  const [issuesClosed, setIssuesClosed] = useState<[]>([]);
+
+  const dispatch = useDispatch();
+
+  const repoData = useSelector(selectRepoData);
+  const error = useSelector(selectError);
 
   const initialValues: IForms = { url: "" };
 
@@ -41,7 +38,7 @@ const FormSearch: FC = () => {
       const regex = /https:\/\/github.com\/([^/]+)\/([^/]+)/;
       const match = regex.exec(url);
       if (!match) {
-        return setError("Invalid GitHub repository URL");
+        return dispatch(setError("Invalid GitHub repository URL"));
       }
 
       const [, owner, repo] = match;
@@ -73,13 +70,13 @@ const FormSearch: FC = () => {
           },
         }
       );
-      setRepoData(response.data);
-      setIssuesOpenArr(responseIssuesOpen.data);
-      setIssuesClosedArr(responseIssuesClosed.data);
-      setError(null);
+
+      dispatch(setRepoData(response.data));
+      setIssuesOpen(responseIssuesOpen.data);
+      setIssuesClosed(responseIssuesClosed.data);
+      dispatch(setError(null));
     } catch (error) {
-      console.error("Failed to fetch repository data:", error);
-      setError("Invalid GitHub repository URL");
+      dispatch(setError("Invalid GitHub repository URL"));
     }
     resetForm();
   };
@@ -175,7 +172,7 @@ const FormSearch: FC = () => {
         </Flex>
       )}
       {error && <Text color="red.500">{error}</Text>}
-      {repoData && <IssuesList open={issuesOpenArr} close={issuesClosedArr} />}
+      {repoData && <IssuesList open={issuesOpen} close={issuesClosed} />}
     </>
   );
 };

@@ -5,32 +5,35 @@ import {
   ListItem,
   Text,
   UnorderedList,
-  theme,
 } from "@chakra-ui/react";
 import { css } from "@emotion/react";
-import { FC } from "react";
+import { FC, useEffect } from "react";
+import { IIssues } from "../types";
+import { useDispatch } from "react-redux";
+import {
+  setAssigneeIssues,
+  setClosedIssues,
+  setOpenIssues,
+} from "../redux/issuesSlice";
+import { useSelector } from "react-redux";
+import {
+  selectAssigneeIssues,
+  selectClosedIssues,
+  selectOpenIssues,
+} from "../redux/selectors";
 
 interface IProps {
-  open: Arr[];
-  close: Arr[];
-}
-
-interface Arr {
-  id: number;
-  pull_request: {};
-  state: string;
-  title: string;
-  number: number;
-  created_at: string;
-  user: {
-    login: string;
-    html_url: string;
-  };
-  comments: number;
-  assignee: {} | null;
+  open: IIssues[];
+  close: IIssues[];
 }
 
 const IssuesList: FC<IProps> = ({ open, close }) => {
+  const dispatch = useDispatch();
+
+  const openIssues = useSelector(selectOpenIssues);
+  const closedIssues = useSelector(selectClosedIssues);
+  const assigneeIssues = useSelector(selectAssigneeIssues);
+
   const stroke = css`
     display: inline;
     font-size: 16px;
@@ -39,20 +42,26 @@ const IssuesList: FC<IProps> = ({ open, close }) => {
     height: 16px;
   `;
 
-  const openIssues = open.filter((obj) => !obj.hasOwnProperty("pull_request"));
+  useEffect(() => {
+    const openIssues = open.filter(
+      (obj) => !obj.hasOwnProperty("pull_request")
+    );
+    dispatch(setOpenIssues(openIssues));
 
-  const closedIssues = close.filter(
-    (obj) => !obj.hasOwnProperty("pull_request")
-  );
+    const closedIssues = close.filter(
+      (obj) => !obj.hasOwnProperty("pull_request")
+    );
+    dispatch(setClosedIssues(closedIssues));
 
-  const assigneeIssues = openIssues.filter((i) => i.assignee !== null);
+    const assigneeIssues = openIssues.filter((i) => i.assignee !== null);
+    dispatch(setAssigneeIssues(assigneeIssues));
+  }, [close, open, dispatch]);
+
+  const flexWrapCondition = window.innerWidth <= 1000 ? "wrap" : "nowrap";
 
   return (
-    <Flex gap={5}>
-      <Box
-        width={`calc(${theme.sizes.container.xl} / 2 - 2 * 20px)`}
-        textAlign="center"
-      >
+    <Flex gap={5} flexWrap={flexWrapCondition}>
+      <Box flex="1" textAlign="center" minWidth="280px">
         <Text mb={5} fontWeight="700" as="h2">
           ToDo
         </Text>
@@ -87,7 +96,7 @@ const IssuesList: FC<IProps> = ({ open, close }) => {
                 )}{" "}
                 days ago
               </Text>
-              <Flex alignItems="center">
+              <Flex alignItems="center" flexWrap="wrap">
                 <Link
                   href={item.user.html_url}
                   target="blank"
@@ -102,10 +111,7 @@ const IssuesList: FC<IProps> = ({ open, close }) => {
           ))}
         </UnorderedList>
       </Box>
-      <Box
-        width={`calc(${theme.sizes.container.xl} / 2 - 2 * 20px)`}
-        textAlign="center"
-      >
+      <Box flex="1" textAlign="center" minWidth="280px">
         <Text mb={5} fontWeight="700" as="h2">
           In Progress
         </Text>
@@ -140,7 +146,7 @@ const IssuesList: FC<IProps> = ({ open, close }) => {
                 )}{" "}
                 days ago
               </Text>
-              <Flex alignItems="center">
+              <Flex alignItems="center" flexWrap="wrap">
                 <Link
                   href={item.user.html_url}
                   target="blank"
@@ -155,10 +161,7 @@ const IssuesList: FC<IProps> = ({ open, close }) => {
           ))}
         </UnorderedList>
       </Box>
-      <Box
-        width={`calc(${theme.sizes.container.xl} / 2 - 2 * 20px)`}
-        textAlign="center"
-      >
+      <Box flex="1" textAlign="center" minWidth="280px">
         <Text mb={5} fontWeight="700" as="h2">
           Done
         </Text>
@@ -193,7 +196,7 @@ const IssuesList: FC<IProps> = ({ open, close }) => {
                 )}{" "}
                 days ago
               </Text>
-              <Flex alignItems="center">
+              <Flex alignItems="center" flexWrap="wrap">
                 <Link
                   href={item.user.html_url}
                   target="blank"

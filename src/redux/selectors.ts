@@ -1,18 +1,18 @@
-import { IState } from "./nanniesSlice";
-import { IFilter } from "./filterSlice";
+import { IState } from "./issuesSlice";
 
-export const selectNannies = (state: { nannies: IState }) =>
-  state.nannies.items;
+export const selectRepoData = (state: { issues: IState }) =>
+  state.issues.repoData;
 
-export const selectIsLoading = (state: { nannies: IState }) =>
-  state.nannies.isLoading;
+export const selectOpenIssues = (state: { issues: IState }) =>
+  state.issues.openIssues;
 
-export const selectError = (state: { nannies: IState }) => state.nannies.error;
+export const selectAssigneeIssues = (state: { issues: IState }) =>
+  state.issues.assigneeIssues;
 
-export const selectFilter = (state: IFilter) => state.filter;
+export const selectClosedIssues = (state: { issues: IState }) =>
+  state.issues.closedIssues;
 
-export const selectFavoritesNannies = (state: { nannies: IState }) =>
-  state.nannies.favorites;
+export const selectIsLoading = (state: { issues: IState }) =>
+  state.issues.isLoading;
 
-export const selectCurrentPage = (state: { nannies: IState }) =>
-  state.nannies.currentPage;
+export const selectError = (state: { issues: IState }) => state.issues.error;
