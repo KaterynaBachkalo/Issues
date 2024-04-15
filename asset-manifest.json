@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/issue-board/static/css/main.3a0d13b8.css",
-    "main.js": "/issue-board/static/js/main.a65a179a.js",
-    "static/js/70.ab4dd9b1.chunk.js": "/issue-board/static/js/70.ab4dd9b1.chunk.js",
+    "main.css": "/issue-board/static/css/main.dad91939.css",
+    "main.js": "/issue-board/static/js/main.dd1357ed.js",
+    "static/js/631.3c92d24b.chunk.js": "/issue-board/static/js/631.3c92d24b.chunk.js",
     "static/js/124.f2e16fbc.chunk.js": "/issue-board/static/js/124.f2e16fbc.chunk.js",
     "index.html": "/issue-board/index.html",
     "static/media/arrowup.svg": "/issue-board/static/media/arrowup.f7f0c8638304ccc50da07f9015e3790e.svg",
-    "main.3a0d13b8.css.map": "/issue-board/static/css/main.3a0d13b8.css.map",
-    "main.a65a179a.js.map": "/issue-board/static/js/main.a65a179a.js.map",
-    "70.ab4dd9b1.chunk.js.map": "/issue-board/static/js/70.ab4dd9b1.chunk.js.map",
+    "main.dad91939.css.map": "/issue-board/static/css/main.dad91939.css.map",
+    "main.dd1357ed.js.map": "/issue-board/static/js/main.dd1357ed.js.map",
+    "631.3c92d24b.chunk.js.map": "/issue-board/static/js/631.3c92d24b.chunk.js.map",
     "124.f2e16fbc.chunk.js.map": "/issue-board/static/js/124.f2e16fbc.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.3a0d13b8.css",
-    "static/js/main.a65a179a.js"
+    "static/css/main.dad91939.css",
+    "static/js/main.dd1357ed.js"
   ]
 }
