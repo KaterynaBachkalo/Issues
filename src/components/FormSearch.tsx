@@ -1,13 +1,12 @@
 import { Formik, Field, Form, FieldProps } from "formik";
 import { FC, useState } from "react";
-import { css } from "@emotion/react";
 import {
-  Box,
   Button,
   Flex,
   FormControl,
   FormErrorMessage,
   Input,
+  Link,
   Text,
 } from "@chakra-ui/react";
 import axios from "axios";
@@ -20,8 +19,10 @@ interface IForms {
 
 interface IRepoData {
   name: string;
+  html_url: string;
   owner: {
     login: string;
+    html_url: string;
   };
   stargazers_count: number;
 }
@@ -37,7 +38,6 @@ const FormSearch: FC = () => {
   const onSubmit = async (values: { url: string }, { resetForm }: any) => {
     const { url } = values;
     try {
-      // Виділяємо власника та ім'я репозиторію з URL
       const regex = /https:\/\/github.com\/([^/]+)\/([^/]+)/;
       const match = regex.exec(url);
       if (!match) {
@@ -46,7 +46,6 @@ const FormSearch: FC = () => {
 
       const [, owner, repo] = match;
 
-      // Виконати запит до GitHub API для отримання даних репозиторію
       const response = await axios.get(
         `https://api.github.com/repos/${owner}/${repo}`,
 
@@ -56,10 +55,9 @@ const FormSearch: FC = () => {
           },
         }
       );
-      // Виконати запит до GitHub API для отримання даних issues
 
       const responseIssuesOpen = await axios.get(
-        `https://api.github.com/repos/${owner}/${repo}/issues?state=open`,
+        `https://api.github.com/repos/${owner}/${repo}/issues?state=open&per_page=100`,
         {
           headers: {
             Authorization: `${process.env.REACT_APP_ISSUES_TOKEN}`,
@@ -68,7 +66,7 @@ const FormSearch: FC = () => {
       );
 
       const responseIssuesClosed = await axios.get(
-        `https://api.github.com/repos/${owner}/${repo}/issues?state=closed`,
+        `https://api.github.com/repos/${owner}/${repo}/issues?state=closed&per_page=100`,
         {
           headers: {
             Authorization: `${process.env.REACT_APP_ISSUES_TOKEN}`,
@@ -85,36 +83,6 @@ const FormSearch: FC = () => {
     }
     resetForm();
   };
-
-  const formStyles = css`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    position: relative;
-    margin-bottom: 10px;
-  `;
-
-  const inputStyles = css`
-    width: 100%;
-    padding: 10px;
-    border: 2px solid black;
-    border-radius: 8px;
-    box-shadow: 2px 2px 2px #ccc;
-    font-family: "Handwriting", sans-serif;
-    font-size: 16px;
-    line-height: 1.25;
-  `;
-
-  const buttonStyles = css`
-    background-color: #f2f2f2;
-    border: 2px solid black;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-family: "Handwriting", sans-serif;
-    box-shadow: 2px 2px 2px #ccc;
-    cursor: pointer;
-  `;
 
   function validateName(value: string) {
     let error;
@@ -141,7 +109,13 @@ const FormSearch: FC = () => {
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {() => (
           <Form>
-            <Box css={formStyles}>
+            <Flex
+              justifyContent="center"
+              alignItems="center"
+              gap={5}
+              mb={3}
+              position="relative"
+            >
               <Field name="url" validate={validateName}>
                 {({ field, form }: FieldProps) => (
                   <FormControl
@@ -150,7 +124,12 @@ const FormSearch: FC = () => {
                     <Input
                       {...field}
                       placeholder="Enter repo URL"
-                      css={inputStyles}
+                      width="100%"
+                      p={3}
+                      border="2px solid #000"
+                      borderRadius={8}
+                      boxShadow="2px 2px 2px #ccc"
+                      bgColor="#f2f2f2"
                     />
                     {typeof form.errors.name === "string" && (
                       <FormErrorMessage>{form.errors.name}</FormErrorMessage>
@@ -158,17 +137,38 @@ const FormSearch: FC = () => {
                   </FormControl>
                 )}
               </Field>
-              <Button type="submit" css={buttonStyles}>
+              <Button
+                type="submit"
+                border="2px solid #000"
+                borderRadius={8}
+                boxShadow="2px 2px 2px #ccc"
+                bgColor="#f2f2f2"
+                padding="10px 20px"
+              >
                 Load issues
               </Button>
-            </Box>
+            </Flex>
           </Form>
         )}
       </Formik>
       {repoData && (
         <Flex alignItems="center" mb={12}>
           <Text color="blue.500" fontWeight="700" mr={5}>
-            {ownerName} {">"} {nameRepo}
+            <Link
+              href={repoData.owner.html_url}
+              target="blank"
+              _hover={{ textDecoration: "none" }}
+            >
+              {ownerName}
+            </Link>{" "}
+            {">"}{" "}
+            <Link
+              href={repoData.html_url}
+              target="blank"
+              _hover={{ textDecoration: "none" }}
+            >
+              {nameRepo}
+            </Link>
           </Text>
           <StarIcon color="orange.300" mr={1} />
           <Text fontWeight="700">{stars} K stars</Text>

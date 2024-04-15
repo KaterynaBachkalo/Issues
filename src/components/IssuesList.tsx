@@ -5,6 +5,7 @@ import {
   ListItem,
   Text,
   UnorderedList,
+  theme,
 } from "@chakra-ui/react";
 import { css } from "@emotion/react";
 import { FC } from "react";
@@ -26,34 +27,35 @@ interface Arr {
     html_url: string;
   };
   comments: number;
+  assignee: {} | null;
 }
 
 const IssuesList: FC<IProps> = ({ open, close }) => {
-  console.log(open);
-
-  const boxStyles = css`
-    width: calc(1280px / 2 - 2 * 20px);
-    text-align: center;
-  `;
-
   const stroke = css`
     display: inline;
-    font-size: 10px;
+    font-size: 16px;
     border: 1px solid rgba(17, 16, 28, 0.3);
     margin: 0 10px;
-    height: 10px;
+    height: 16px;
   `;
 
   const openIssues = open.filter((obj) => !obj.hasOwnProperty("pull_request"));
 
-  const closeIssues = close.filter(
+  const closedIssues = close.filter(
     (obj) => !obj.hasOwnProperty("pull_request")
   );
 
+  const assigneeIssues = openIssues.filter((i) => i.assignee !== null);
+
   return (
     <Flex gap={5}>
-      <Box css={boxStyles}>
-        <Text mb={5}>ToDo</Text>
+      <Box
+        width={`calc(${theme.sizes.container.xl} / 2 - 2 * 20px)`}
+        textAlign="center"
+      >
+        <Text mb={5} fontWeight="700" as="h2">
+          ToDo
+        </Text>
         <UnorderedList
           display="flex"
           flexDirection="column"
@@ -61,6 +63,7 @@ const IssuesList: FC<IProps> = ({ open, close }) => {
           textAlign="center"
           border="1px solid black"
           bgColor="gray.300"
+          color="gray.500"
           p={5}
           m={0}
         >
@@ -71,31 +74,41 @@ const IssuesList: FC<IProps> = ({ open, close }) => {
               borderRadius={20}
               border="1px solid black"
               listStyleType="none"
+              p={4}
             >
-              <Text>{item.title}</Text>
-              <Text>#{item.number}</Text>
-              <Text>
-                opened{" "}
-                {new Date().getDate() - new Date(item.created_at).getDate()}{" "}
+              <Text fontWeight="700" textAlign="start" color="gray.800">
+                {item.title}
+              </Text>
+              <Text textAlign="start">
+                #{item.number} opened{" "}
+                {Math.floor(
+                  (new Date().getTime() - new Date(item.created_at).getTime()) /
+                    (3600 * 24 * 1000)
+                )}{" "}
                 days ago
               </Text>
-              <Link href={item.user.html_url}>{item.user.login}</Link>
-              <Text css={stroke}></Text>
-              <Text>Comments: {item.comments}</Text>
+              <Flex alignItems="center">
+                <Link
+                  href={item.user.html_url}
+                  target="blank"
+                  _hover={{ textDecoration: "none" }}
+                >
+                  {item.user.login}
+                </Link>
+                <Text css={stroke}></Text>
+                <Text>Comments: {item.comments}</Text>
+              </Flex>
             </ListItem>
           ))}
         </UnorderedList>
       </Box>
-      <Box css={boxStyles}>
-        <Text mb={5}>In Progress</Text>
-        <Box
-          textAlign="center"
-          border="1px solid black"
-          bgColor="gray.300"
-        ></Box>
-      </Box>
-      <Box css={boxStyles}>
-        <Text mb={5}>Done</Text>
+      <Box
+        width={`calc(${theme.sizes.container.xl} / 2 - 2 * 20px)`}
+        textAlign="center"
+      >
+        <Text mb={5} fontWeight="700" as="h2">
+          In Progress
+        </Text>
         <UnorderedList
           display="flex"
           flexDirection="column"
@@ -103,27 +116,94 @@ const IssuesList: FC<IProps> = ({ open, close }) => {
           textAlign="center"
           border="1px solid black"
           bgColor="gray.300"
+          color="gray.500"
           p={5}
           m={0}
         >
-          {closeIssues?.map((item) => (
+          {assigneeIssues?.map((item) => (
             <ListItem
               key={item.id}
               bgColor="white"
               borderRadius={20}
               border="1px solid black"
               listStyleType="none"
+              p={4}
             >
-              <Text>{item.title}</Text>
-              <Text>#{item.number}</Text>
-              <Text>
-                opened{" "}
-                {new Date().getDate() - new Date(item.created_at).getDate()}{" "}
+              <Text fontWeight="700" textAlign="start" color="gray.800">
+                {item.title}
+              </Text>
+              <Text textAlign="start">
+                #{item.number} opened{" "}
+                {Math.floor(
+                  (new Date().getTime() - new Date(item.created_at).getTime()) /
+                    (3600 * 24 * 1000)
+                )}{" "}
                 days ago
               </Text>
-              <Link href={item.user.html_url}>{item.user.login}</Link>
-              <Text css={stroke}></Text>
-              <Text>Comments: {item.comments}</Text>
+              <Flex alignItems="center">
+                <Link
+                  href={item.user.html_url}
+                  target="blank"
+                  _hover={{ textDecoration: "none" }}
+                >
+                  {item.user.login}
+                </Link>
+                <Text css={stroke}></Text>
+                <Text>Comments: {item.comments}</Text>
+              </Flex>
+            </ListItem>
+          ))}
+        </UnorderedList>
+      </Box>
+      <Box
+        width={`calc(${theme.sizes.container.xl} / 2 - 2 * 20px)`}
+        textAlign="center"
+      >
+        <Text mb={5} fontWeight="700" as="h2">
+          Done
+        </Text>
+        <UnorderedList
+          display="flex"
+          flexDirection="column"
+          gap={5}
+          textAlign="center"
+          border="1px solid black"
+          bgColor="gray.300"
+          color="gray.500"
+          p={5}
+          m={0}
+        >
+          {closedIssues?.map((item) => (
+            <ListItem
+              key={item.id}
+              bgColor="white"
+              borderRadius={20}
+              border="1px solid black"
+              listStyleType="none"
+              p={4}
+            >
+              <Text fontWeight="700" textAlign="start" color="gray.800">
+                {item.title}
+              </Text>
+              <Text textAlign="start">
+                #{item.number} opened{" "}
+                {Math.floor(
+                  (new Date().getTime() - new Date(item.created_at).getTime()) /
+                    (3600 * 24 * 1000)
+                )}{" "}
+                days ago
+              </Text>
+              <Flex alignItems="center">
+                <Link
+                  href={item.user.html_url}
+                  target="blank"
+                  _hover={{ textDecoration: "none" }}
+                >
+                  {item.user.login}
+                </Link>
+                <Text css={stroke}></Text>
+                <Text>Comments: {item.comments}</Text>
+              </Flex>
             </ListItem>
           ))}
         </UnorderedList>
