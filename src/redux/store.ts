@@ -6,3 +6,5 @@ export const store = configureStore({
     issues: issuesReducer as Reducer,
   },
 });
+
+export type AppDispatch = typeof store.dispatch;

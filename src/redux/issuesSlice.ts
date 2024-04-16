@@ -1,6 +1,11 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import { IIssues, IRepoData } from "../types";
+import {
+  fetchIssuesClosedThunk,
+  fetchIssuesOpenThunk,
+  fetchRepoDataThunk,
+} from "./operations";
 
 export interface IState {
   repoData: IRepoData | null;
@@ -54,11 +59,11 @@ const issuesSlice = createSlice({
     clearState(state) {
       state = INITIAL_STATE;
     },
-    setRepoData(state, action: PayloadAction<IRepoData>) {
-      state.repoData = action.payload;
-      state.isLoading = false;
-      state.error = null;
-    },
+    // setRepoData(state, action: PayloadAction<IRepoData>) {
+    //   state.repoData = action.payload;
+    //   state.isLoading = false;
+    //   state.error = null;
+    // },
     setOpenIssues(state, action: PayloadAction<IIssues[]>) {
       state.openIssues = action.payload;
       state.isLoading = false;
@@ -81,11 +86,37 @@ const issuesSlice = createSlice({
       state.error = action.payload;
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchRepoDataThunk.pending, handlePending)
+      .addCase(fetchRepoDataThunk.fulfilled, (state, action) => {
+        state.repoData = action.payload;
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(fetchRepoDataThunk.rejected, handleRejected)
+
+      .addCase(fetchIssuesOpenThunk.pending, handlePending)
+      .addCase(fetchIssuesOpenThunk.fulfilled, (state, action) => {
+        state.openIssues = action.payload;
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(fetchIssuesOpenThunk.rejected, handleRejected)
+
+      .addCase(fetchIssuesClosedThunk.pending, handlePending)
+      .addCase(fetchIssuesClosedThunk.fulfilled, (state, action) => {
+        state.closedIssues = action.payload;
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(fetchIssuesClosedThunk.rejected, handleRejected);
+  },
 });
 
 export const {
   clearState,
-  setRepoData,
+  // setRepoData,
   setOpenIssues,
   setAssigneeIssues,
   setClosedIssues,

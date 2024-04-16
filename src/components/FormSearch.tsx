@@ -9,13 +9,24 @@ import {
   Link,
   Text,
 } from "@chakra-ui/react";
-import axios from "axios";
+// import axios from "axios";
 import { StarIcon } from "@chakra-ui/icons";
 import IssuesList from "./IssuesList";
 import { useDispatch } from "react-redux";
-import { setError, setRepoData } from "../redux/issuesSlice";
+// import { setError, setRepoData } from "../redux/issuesSlice";
 import { useSelector } from "react-redux";
-import { selectError, selectRepoData } from "../redux/selectors";
+import {
+  selectError,
+  selectOpenIssues,
+  selectRepoData,
+} from "../redux/selectors";
+import {
+  fetchIssuesClosedThunk,
+  fetchIssuesOpenThunk,
+  fetchRepoDataThunk,
+} from "../redux/operations";
+import { setError } from "../redux/issuesSlice";
+import { AppDispatch } from "../redux/store";
 
 interface IForms {
   url: string;
@@ -25,7 +36,9 @@ const FormSearch: FC = () => {
   const [issuesOpen, setIssuesOpen] = useState<[]>([]);
   const [issuesClosed, setIssuesClosed] = useState<[]>([]);
 
-  const dispatch = useDispatch();
+  const openIssues = useSelector(selectOpenIssues);
+
+  const dispatch: AppDispatch = useDispatch();
 
   const repoData = useSelector(selectRepoData);
   const error = useSelector(selectError);
@@ -34,50 +47,20 @@ const FormSearch: FC = () => {
 
   const onSubmit = async (values: { url: string }, { resetForm }: any) => {
     const { url } = values;
-    try {
-      const regex = /https:\/\/github.com\/([^/]+)\/([^/]+)/;
-      const match = regex.exec(url);
-      if (!match) {
-        return dispatch(setError("Invalid GitHub repository URL"));
-      }
-
-      const [, owner, repo] = match;
-
-      const response = await axios.get(
-        `https://api.github.com/repos/${owner}/${repo}`,
-
-        {
-          headers: {
-            Authorization: `${process.env.REACT_APP_ISSUES_TOKEN}`,
-          },
-        }
-      );
-
-      const responseIssuesOpen = await axios.get(
-        `https://api.github.com/repos/${owner}/${repo}/issues?state=open&per_page=100`,
-        {
-          headers: {
-            Authorization: `${process.env.REACT_APP_ISSUES_TOKEN}`,
-          },
-        }
-      );
-
-      const responseIssuesClosed = await axios.get(
-        `https://api.github.com/repos/${owner}/${repo}/issues?state=closed&per_page=100`,
-        {
-          headers: {
-            Authorization: `${process.env.REACT_APP_ISSUES_TOKEN}`,
-          },
-        }
-      );
-
-      dispatch(setRepoData(response.data));
-      setIssuesOpen(responseIssuesOpen.data);
-      setIssuesClosed(responseIssuesClosed.data);
-      dispatch(setError(null));
-    } catch (error) {
-      dispatch(setError("Invalid GitHub repository URL"));
+    const regex = /https:\/\/github.com\/([^/]+)\/([^/]+)/;
+    const match = regex.exec(url);
+    if (!match) {
+      return dispatch(setError("Invalid GitHub repository URL"));
     }
+
+    const [, owner, repo] = match;
+
+    const params = { owner, repo };
+
+    dispatch(fetchRepoDataThunk(params));
+    dispatch(fetchIssuesOpenThunk(params));
+    dispatch(fetchIssuesClosedThunk(params));
+
     resetForm();
   };
 

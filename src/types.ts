@@ -22,3 +22,8 @@ export interface IRepoData {
   };
   stargazers_count: number;
 }
+
+export interface RepoDataParams {
+  owner: string;
+  repo: string;
+}
