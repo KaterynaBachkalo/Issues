@@ -1,7 +1,7 @@
 export interface IIssues {
-  id: number;
-  pull_request: {};
-  state: string;
+  id?: number;
+  pull_request?: {};
+  state?: string;
   title: string;
   number: number;
   created_at: string;
@@ -10,7 +10,7 @@ export interface IIssues {
     html_url: string;
   };
   comments: number;
-  assignee: {} | null;
+  assignee?: {} | null;
 }
 
 export interface IRepoData {
@@ -26,4 +26,21 @@ export interface IRepoData {
 export interface RepoDataParams {
   owner: string;
   repo: string;
+}
+
+export interface IIssuesProps {
+  data: {
+    id?: number;
+    pull_request?: {};
+    state?: string;
+    title: string;
+    number: number;
+    created_at: string;
+    user: {
+      login: string;
+      html_url: string;
+    };
+    comments: number;
+    assignee?: {} | null;
+  };
 }
