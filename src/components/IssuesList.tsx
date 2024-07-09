@@ -1,12 +1,4 @@
-import {
-  Box,
-  Flex,
-  Link,
-  ListItem,
-  Text,
-  UnorderedList,
-} from "@chakra-ui/react";
-import { css } from "@emotion/react";
+import { Box, Flex, Text, UnorderedList } from "@chakra-ui/react";
 import { FC, useEffect } from "react";
 import { IIssues } from "../types";
 import { useDispatch } from "react-redux";
@@ -21,6 +13,9 @@ import {
   selectClosedIssues,
   selectOpenIssues,
 } from "../redux/selectors";
+import ListItemOpenIssues from "./ListItemOpenIssues";
+import ListItemAssigneeIssues from "./ListItemAssigneeIssues";
+import ListItemClosedIssues from "./ListItemClosedIssues";
 
 interface IProps {
   open: IIssues[];
@@ -28,19 +23,11 @@ interface IProps {
 }
 
 const IssuesList: FC<IProps> = ({ open, close }) => {
-  const dispatch = useDispatch();
-
   const openIssues = useSelector(selectOpenIssues);
   const closedIssues = useSelector(selectClosedIssues);
   const assigneeIssues = useSelector(selectAssigneeIssues);
 
-  const stroke = css`
-    display: inline;
-    font-size: 16px;
-    border: 1px solid rgba(17, 16, 28, 0.3);
-    margin: 0 10px;
-    height: 16px;
-  `;
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const openIssues = open.filter(
@@ -77,37 +64,14 @@ const IssuesList: FC<IProps> = ({ open, close }) => {
           m={0}
         >
           {openIssues?.map((item) => (
-            <ListItem
+            <ListItemOpenIssues
               key={item.id}
-              bgColor="white"
-              borderRadius={20}
-              border="1px solid black"
-              listStyleType="none"
-              p={4}
-            >
-              <Text fontWeight="700" textAlign="start" color="gray.800">
-                {item.title}
-              </Text>
-              <Text textAlign="start">
-                #{item.number} opened{" "}
-                {Math.floor(
-                  (new Date().getTime() - new Date(item.created_at).getTime()) /
-                    (3600 * 24 * 1000)
-                )}{" "}
-                days ago
-              </Text>
-              <Flex alignItems="center" flexWrap="wrap">
-                <Link
-                  href={item.user.html_url}
-                  target="blank"
-                  _hover={{ textDecoration: "none" }}
-                >
-                  {item.user.login}
-                </Link>
-                <Text css={stroke}></Text>
-                <Text>Comments: {item.comments}</Text>
-              </Flex>
-            </ListItem>
+              title={item.title}
+              number={item.number}
+              created_at={item.created_at}
+              user={item.user}
+              comments={item.comments}
+            />
           ))}
         </UnorderedList>
       </Box>
@@ -127,41 +91,16 @@ const IssuesList: FC<IProps> = ({ open, close }) => {
           m={0}
         >
           {assigneeIssues?.map((item) => (
-            <ListItem
-              key={item.id}
-              bgColor="white"
-              borderRadius={20}
-              border="1px solid black"
-              listStyleType="none"
-              p={4}
-            >
-              <Text fontWeight="700" textAlign="start" color="gray.800">
-                {item.title}
-              </Text>
-              <Text textAlign="start">
-                #{item.number} opened{" "}
-                {Math.floor(
-                  (new Date().getTime() - new Date(item.created_at).getTime()) /
-                    (3600 * 24 * 1000)
-                )}{" "}
-                days ago
-              </Text>
-              <Flex alignItems="center" flexWrap="wrap">
-                <Link
-                  href={item.user.html_url}
-                  target="blank"
-                  _hover={{ textDecoration: "none" }}
-                >
-                  {item.user.login}
-                </Link>
-                <Text css={stroke}></Text>
-                <Text>Comments: {item.comments}</Text>
-              </Flex>
-            </ListItem>
+            <ListItemAssigneeIssues key={item.id} data={item} />
           ))}
         </UnorderedList>
       </Box>
-      <Box flex="1" textAlign="center" minWidth="280px">
+      <Box
+        flex="1"
+        textAlign="center"
+        minWidth="280px"
+        onDragOver={(e) => e.preventDefault()}
+      >
         <Text mb={5} fontWeight="700" as="h2">
           Done
         </Text>
@@ -177,37 +116,7 @@ const IssuesList: FC<IProps> = ({ open, close }) => {
           m={0}
         >
           {closedIssues?.map((item) => (
-            <ListItem
-              key={item.id}
-              bgColor="white"
-              borderRadius={20}
-              border="1px solid black"
-              listStyleType="none"
-              p={4}
-            >
-              <Text fontWeight="700" textAlign="start" color="gray.800">
-                {item.title}
-              </Text>
-              <Text textAlign="start">
-                #{item.number} opened{" "}
-                {Math.floor(
-                  (new Date().getTime() - new Date(item.created_at).getTime()) /
-                    (3600 * 24 * 1000)
-                )}{" "}
-                days ago
-              </Text>
-              <Flex alignItems="center" flexWrap="wrap">
-                <Link
-                  href={item.user.html_url}
-                  target="blank"
-                  _hover={{ textDecoration: "none" }}
-                >
-                  {item.user.login}
-                </Link>
-                <Text css={stroke}></Text>
-                <Text>Comments: {item.comments}</Text>
-              </Flex>
-            </ListItem>
+            <ListItemClosedIssues key={item.id} data={item} />
           ))}
         </UnorderedList>
       </Box>
